@@ -29,7 +29,7 @@ namespace DeveloperTest.Database
                 {
                     JobId = 1,
                     Engineer = "Test",
-                    When = DateTime.Now
+                    When = new DateTime(2022, 2, 1, 12, 0, 0)
                 });
         }
     }
