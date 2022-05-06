@@ -1,0 +1,61 @@
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using DeveloperTest.Business.Interfaces;
+using DeveloperTest.Models;
+using System;
+
+namespace DeveloperTest.Controllers
+{
+    [ApiController, Route("[controller]")]
+    public class CustomerController : ControllerBase
+    {
+        private readonly ICustomerService customerService;
+
+        public CustomerController(ICustomerService customerService)
+        {
+            this.customerService = customerService;
+        }
+
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok(customerService.GetCustomers());
+        }
+
+        [HttpGet, Route("Names")]
+        public IActionResult GetCustomerNames()
+        {
+            return Ok(customerService.GetCustomerNames());
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            var job = customerService.GetCustomer(id);
+
+            if (job == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(job);
+        }
+
+        [HttpPost]
+        public IActionResult Create(BaseCustomerModel model)
+        {
+            //if (model.When.Date < DateTime.Now.Date)
+            //{
+            //    return BadRequest("Date cannot be in the past");
+            //}
+            if (model.CustomerName.Length < 5)
+            {
+                return BadRequest("Name cannot be shorter than 5 characters");
+            }
+
+            var customer = customerService.CreateCustomer(model);
+
+            return Created($"customer/{customer.CustomerId}", customer);
+        }
+    }
+}

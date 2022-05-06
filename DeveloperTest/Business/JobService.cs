@@ -21,7 +21,8 @@ namespace DeveloperTest.Business
             {
                 JobId = x.JobId,
                 Engineer = x.Engineer,
-                When = x.When
+                When = x.When,
+                CustomerName = x.Customer == null ? "Unknown" : x.Customer.Name,
             }).ToArray();
         }
 
@@ -31,7 +32,9 @@ namespace DeveloperTest.Business
             {
                 JobId = x.JobId,
                 Engineer = x.Engineer,
-                When = x.When
+                When = x.When,
+                CustomerName = x.Customer == null ? "Unknown" : x.Customer.Name,
+                CustomerType = x.Customer == null ? "Unknown" : ((CustomerType)x.Customer.Type).ToString()
             }).SingleOrDefault();
         }
 
@@ -40,7 +43,8 @@ namespace DeveloperTest.Business
             var addedJob = context.Jobs.Add(new Job
             {
                 Engineer = model.Engineer,
-                When = model.When
+                When = model.When,
+                Customer = context.Customers.First(x => x.Name == model.CustomerName)
             });
 
             context.SaveChanges();

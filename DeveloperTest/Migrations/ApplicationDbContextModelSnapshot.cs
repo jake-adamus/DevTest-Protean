@@ -22,6 +22,33 @@ namespace DeveloperTest.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("DeveloperTest.Database.Models.Customer", b =>
+                {
+                    b.Property<int>("CustomerId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CustomerId"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.HasKey("CustomerId");
+
+                    b.ToTable("Customers");
+
+                    b.HasData(
+                        new
+                        {
+                            CustomerId = 1,
+                            Name = "Test Customer Ltd.",
+                            Type = 1
+                        });
+                });
+
             modelBuilder.Entity("DeveloperTest.Database.Models.Job", b =>
                 {
                     b.Property<int>("JobId")
@@ -30,6 +57,9 @@ namespace DeveloperTest.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("JobId"), 1L, 1);
 
+                    b.Property<int?>("CustomerId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Engineer")
                         .HasColumnType("nvarchar(max)");
 
@@ -37,6 +67,8 @@ namespace DeveloperTest.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("JobId");
+
+                    b.HasIndex("CustomerId");
 
                     b.ToTable("Jobs");
 
@@ -47,6 +79,20 @@ namespace DeveloperTest.Migrations
                             Engineer = "Test",
                             When = new DateTime(2022, 2, 1, 12, 0, 0, 0, DateTimeKind.Unspecified)
                         });
+                });
+
+            modelBuilder.Entity("DeveloperTest.Database.Models.Job", b =>
+                {
+                    b.HasOne("DeveloperTest.Database.Models.Customer", "Customer")
+                        .WithMany("Jobs")
+                        .HasForeignKey("CustomerId");
+
+                    b.Navigation("Customer");
+                });
+
+            modelBuilder.Entity("DeveloperTest.Database.Models.Customer", b =>
+                {
+                    b.Navigation("Jobs");
                 });
 #pragma warning restore 612, 618
         }
